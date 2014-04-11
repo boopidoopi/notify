@@ -1,0 +1,34 @@
+= notify
+Simple mechanism of publishing/subscribing for activerecord models
+
+== Basic Usage
+Using the notify:
+
+  class Model < ActiveRecord::Base
+    include Notify
+    tracked :on => {
+      :create => {
+        :create_channel => true
+      },
+      :update => {
+        :update_channel => proc { |m| some_condition }
+      },
+      :destroy => {
+        :destroy_channel => true
+      }
+    }
+  end
+  
+  Model.subscribe(:create_channel) do |model|
+    # some actions
+  end
+  
+  Model.subscribe(:update_channel) do |model|
+    # some actions
+  end
+
+  Model.subscribe(:destroy_channel) do |model|
+    # some actions
+  end
+
+
