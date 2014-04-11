@@ -1,6 +1,4 @@
-notify
-======
-
+= notify
 Simple mechanism of publishing/subscribing for activerecord models
 
 == Basic Usage
@@ -20,4 +18,17 @@ Using the notify:
       }
     }
   end
+  
+  Model.subscribe(:create_channel) do |model|
+    # some actions
+  end
+  
+  Model.subscribe(:update_channel) do |model|
+    # some actions
+  end
+
+  Model.subscribe(:destroy_channel) do |model|
+    # some actions
+  end
+
 
