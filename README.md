@@ -1,6 +1,6 @@
 # Notify
 
-TODO: Write a gem description
+Simple mechanism of publishing/subscribing for activerecord models
 
 ## Installation
 
@@ -27,3 +27,35 @@ TODO: Write usage instructions here
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
+## Basic Usage
+Using the notify:
+
+    class Model < ActiveRecord::Base
+      include Notify
+      tracked :on => {
+        :create => {
+          :create_channel => true
+        },
+        :update => {
+          :update_channel => proc { |m| some_condition }
+        },
+        :destroy => {
+          :destroy_channel => true
+        }
+      }
+    end
+
+    Model.subscribe(:create_channel) do |model|
+      # some actions
+    end
+
+    Model.subscribe(:update_channel) do |model|
+      # some actions
+    end
+
+    Model.subscribe(:destroy_channel) do |model|
+      # some actions
+    end
+
+
