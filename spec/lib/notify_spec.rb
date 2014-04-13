@@ -7,15 +7,12 @@ describe Notify do
 
       include Notify
       tracked :on => {
-        :create => {
-          :create_channel => true
-        },
-        :update => {
-          :update_name_channel => proc { |m| m.name_was && m.name_changed? }
-        },
-        :destroy => {
-          :destroy_channel => true
-        }
+        :create => :create_channel,
+        :update => [
+          :update_channel,
+          { :update_name_channel => proc { |m| m.name_was && m.name_changed? }}
+        ],
+        :destroy => [:destroy_channel, :some_other_channel]
       }
     end
   end
@@ -61,6 +58,10 @@ describe Notify do
         Article.subscribe(:destroy_channel) do |model|
           num << "thing"
         end
+
+        Article.subscribe(:some_other_channel) do |model|
+          num << "!"
+        end
       }
 
       it "should fire subscribers code" do
@@ -68,7 +69,7 @@ describe Notify do
           article = Article.create(name: "test")
           article.destroy
         end
-        expected.to change{num}.from("some").to("something")
+        expected.to change{num}.from("some").to("something!")
       end
     end
   end

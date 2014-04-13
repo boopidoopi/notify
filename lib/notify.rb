@@ -31,9 +31,17 @@ module Notify
 
   private
   def extract_channels(action_type)
-    chanels = self.notify_hooks[action_type].select do |_, p|
-       ((!!p == p) && p ) || ( p.is_a?(Proc) && p.call(self) )
+    channels = self.notify_hooks[action_type]
+    return [channels] unless channels.is_a?(Array)
+
+    self.notify_hooks[action_type].inject([]) do |a, channel|
+      if channel.is_a?(Hash)
+        c, p = channel.first
+        a << c if p.is_a?(Proc) && p.call(self)
+      else
+        a << channel
+      end
+      a
     end
-    chanels.keys
   end
 end
