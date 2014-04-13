@@ -23,15 +23,11 @@ Using the notify:
     class Model < ActiveRecord::Base
       include Notify
       tracked :on => {
-        :create => {
-          :create_channel => true
-        },
-        :update => {
+        :create => :create_channel,
+        :update => {[
           :update_channel => proc { |m| some_condition }
-        },
-        :destroy => {
-          :destroy_channel => true
-        }
+        ]},
+        :destroy => [:destroy_channel, :some_other_channel]
       }
     end
 
